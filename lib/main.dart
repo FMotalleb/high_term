@@ -37,8 +37,8 @@ class HighTermApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider<TabController<TerminalCubit>>(
-      create: (context) => TabController<TerminalCubit>(
+    return BlocProvider<ITabController<TerminalCubit>>(
+      create: (context) => ITabController<TerminalCubit>(
         newItemGenerator: (int index) {
           return TerminalCubit(
             TermGenerator(

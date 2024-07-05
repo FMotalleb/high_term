@@ -17,8 +17,8 @@ class TabControllerState<T> extends Equatable {
   List<Object?> get props => [currentIndex, totalItems];
 }
 
-class TabController<T> extends Cubit<TabControllerState<T>> {
-  TabController({
+class ITabController<T> extends Cubit<TabControllerState<T>> {
+  ITabController({
     T? initialItem,
     required this.newItemGenerator,
   })  : items = List.empty(growable: true),

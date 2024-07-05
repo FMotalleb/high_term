@@ -49,8 +49,17 @@ class ResizableWrapper extends StatelessWidget {
                 resizeDirection,
               ),
             ),
-            child: const Divider(
-              thickness: 10,
+            child: Container(
+              height: 10,
+              padding: EdgeInsets.zero,
+              margin: const EdgeInsets.symmetric(horizontal: 10),
+              decoration: const BoxDecoration(
+                color: Colors.grey,
+                borderRadius: BorderRadius.all(
+                  Radius.circular(5),
+                ),
+              ),
+              child: const SizedBox.expand(),
             ),
           ),
       ],
