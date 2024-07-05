@@ -1,7 +1,9 @@
 import 'dart:io';
 
-import 'package:flutter/material.dart' show ThemeMode;
+import 'package:flutter/material.dart' show Colors, ThemeMode;
 import 'package:flutter/widgets.dart';
+import 'package:flutter_acrylic/window.dart';
+import 'package:flutter_acrylic/window_effect.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:macos_ui/macos_ui.dart';
 import 'package:screen_retriever/screen_retriever.dart';
@@ -15,9 +17,14 @@ import 'features/terminal_tab/view/terminals_main_window.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+  await windowManager.ensureInitialized();
+  await Window.initialize();
+  await Window.setEffect(
+    effect: WindowEffect.transparent,
+  );
+
   final display = await screenRetriever.getPrimaryDisplay();
 
-  await windowManager.ensureInitialized();
   await windowManager.setAsFrameless();
 
   final size = display.size;
@@ -37,30 +44,44 @@ class HighTermApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider<ITabController<TerminalCubit>>(
-      create: (context) => ITabController<TerminalCubit>(
-        newItemGenerator: (int index) {
-          return TerminalCubit(
-            TermGenerator(
-              maxLines: 1000,
-              terminalCommand: 'nu',
-              workingDirectory: Directory.current,
-              environmentsVariable: const {},
-            ),
-          );
-        },
-      ),
-      child: MacosApp(
-        title: 'Flutter Demo',
-        builder: (context, child) => ResizableWrapper(
-          resizeDirection: AxisDirection.down,
-          child: child ?? const SizedBox(),
+    return Container(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.all(
+          Radius.circular(10),
         ),
-        debugShowCheckedModeBanner: false,
-        theme: MacosThemeData.light(),
-        darkTheme: MacosThemeData.dark(),
-        themeMode: ThemeMode.dark,
-        home: const TerminalsMainWindow(title: 'Flutter Demo Home Page'),
+        color: Colors.blueGrey.withAlpha(150),
+      ),
+      child: BlocProvider<ITabController<TerminalCubit>>(
+        create: (context) => ITabController<TerminalCubit>(
+          newItemGenerator: (int index) {
+            return TerminalCubit(
+              TermGenerator(
+                maxLines: 1000,
+                terminalCommand: 'nu',
+                workingDirectory: Directory.current,
+                environmentsVariable: const {},
+              ),
+            );
+          },
+        ),
+        child: MacosApp(
+          title: 'Flutter Demo',
+          builder: (context, child) => Padding(
+            padding: const EdgeInsets.only(bottom: 5),
+            child: ResizableWrapper(
+              resizeDirection: AxisDirection.down,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(vertical: 5),
+                child: child,
+              ),
+            ),
+          ),
+          debugShowCheckedModeBanner: false,
+          theme: MacosThemeData.light(),
+          darkTheme: MacosThemeData.dark(),
+          themeMode: ThemeMode.dark,
+          home: const TerminalsMainWindow(title: 'Flutter Demo Home Page'),
+        ),
       ),
     );
   }
