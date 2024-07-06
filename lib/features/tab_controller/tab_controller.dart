@@ -6,13 +6,11 @@ class TabControllerState<T> extends Equatable {
     required this.totalItems,
     required this.currentIndex,
     required this.currentItem,
-    required this.allItems,
   });
 
   final int totalItems;
   final int currentIndex;
   final T currentItem;
-  final List<T> allItems;
   @override
   List<Object?> get props => [currentIndex, totalItems];
 }
@@ -30,7 +28,6 @@ class ITabController<T> extends Cubit<TabControllerState<T>> {
               totalItems: 0,
               currentIndex: 0,
               currentItem: item,
-              allItems: [item],
             );
           }(),
         ) {
@@ -40,18 +37,16 @@ class ITabController<T> extends Cubit<TabControllerState<T>> {
         totalItems: 1,
         currentIndex: 0,
         currentItem: items.last,
-        allItems: items,
       ),
     );
   }
-  void newTab() {
+  Future<void> newTab() async {
     items.add(newItemGenerator(items.length - 1));
     emit(
       TabControllerState(
         totalItems: items.length,
         currentIndex: items.length - 1,
         currentItem: items.last,
-        allItems: items,
       ),
     );
   }
@@ -63,7 +58,6 @@ class ITabController<T> extends Cubit<TabControllerState<T>> {
         totalItems: items.length,
         currentIndex: index,
         currentItem: items[index],
-        allItems: items,
       ),
     );
   }
@@ -76,7 +70,6 @@ class ITabController<T> extends Cubit<TabControllerState<T>> {
         totalItems: items.length,
         currentIndex: items.length - 1,
         currentItem: items.last,
-        allItems: items,
       ),
     );
   }

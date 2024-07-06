@@ -38,7 +38,7 @@ class TerminalsMainWindow extends StatelessWidget {
                       );
                     }
                     return BlocProvider.value(
-                      value: state.allItems[index],
+                      value: state.currentItem,
                       child: TerminalTabBtnView(
                         index: index,
                         isSelected: index == state.currentIndex,
