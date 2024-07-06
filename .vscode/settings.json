@@ -1,0 +1,8 @@
+{
+  "files.associations": {
+    "*.php": "php",
+    "*.geojson": "plaintext",
+    "*.nuon": "nushell",
+    "ioctl.h": "c"
+  }
+}

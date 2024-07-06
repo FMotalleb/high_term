@@ -20,6 +20,12 @@
       "request": "launch",
       "type": "dart",
       "flutterMode": "release"
-    }
+    },
+    {
+      "name": "high_term test",
+      "request": "launch",
+      "program": "lib/main.debug.dart",
+      "type": "dart"
+    },
   ]
 }

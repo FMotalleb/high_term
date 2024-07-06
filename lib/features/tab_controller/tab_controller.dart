@@ -21,6 +21,7 @@ class ITabController<T> extends Cubit<TabControllerState<T>> {
   ITabController({
     T? initialItem,
     required this.newItemGenerator,
+    required this.cleanup,
   })  : items = List.empty(growable: true),
         super(
           () {
@@ -67,6 +68,20 @@ class ITabController<T> extends Cubit<TabControllerState<T>> {
     );
   }
 
+  void remove(int index) {
+    assert(index >= 0 && index < items.length, 'index out of range');
+    items.removeAt(index);
+    emit(
+      TabControllerState(
+        totalItems: items.length,
+        currentIndex: items.length - 1,
+        currentItem: items.last,
+        allItems: items,
+      ),
+    );
+  }
+
   final List<T> items;
   final T Function(int index) newItemGenerator;
+  final void Function(T item) cleanup;
 }

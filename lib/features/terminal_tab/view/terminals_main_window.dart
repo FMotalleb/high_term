@@ -1,4 +1,3 @@
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:macos_ui/macos_ui.dart';
@@ -9,15 +8,7 @@ import 'main_terminal_view.dart';
 import 'terminal_tab_btn_view.dart';
 
 class TerminalsMainWindow extends StatelessWidget {
-  const TerminalsMainWindow({super.key, required this.title});
-
-  final String title;
-
-  @override
-  void debugFillProperties(DiagnosticPropertiesBuilder properties) {
-    super.debugFillProperties(properties);
-    properties.add(StringProperty('title', title));
-  }
+  const TerminalsMainWindow({super.key});
 
   @override
   Widget build(BuildContext context) {

@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:flutter/material.dart' show Colors, ThemeMode;
+import 'package:flutter/services.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_acrylic/window.dart';
 import 'package:flutter_acrylic/window_effect.dart';
@@ -19,10 +20,12 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await windowManager.ensureInitialized();
   await Window.initialize();
-  await Window.setEffect(
-    effect: WindowEffect.transparent,
-  );
-
+  if (Platform.isWindows) {
+    await Window.setEffect(
+      effect: WindowEffect.transparent,
+      dark: true,
+    );
+  }
   final display = await screenRetriever.getPrimaryDisplay();
 
   await windowManager.setAsFrameless();
@@ -30,11 +33,11 @@ void main() async {
   final size = display.size;
 
   await windowManager.setSize(Size(size.width, size.height / 2));
-  await windowManager.setPosition(Offset.zero);
+  await windowManager.setPosition(display.visiblePosition ?? Offset.zero);
   await windowManager.setResizable(true);
 
   await windowManager.setFullScreen(false);
-  await windowManager.isAlwaysOnTop();
+  // await windowManager.isAlwaysOnTop();
 
   runApp(const HighTermApp());
 }
@@ -44,16 +47,19 @@ class HighTermApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return DecoratedBox(
       decoration: BoxDecoration(
-        borderRadius: BorderRadius.all(
+        borderRadius: const BorderRadius.all(
           Radius.circular(10),
         ),
         color: Colors.blueGrey.withAlpha(150),
       ),
       child: BlocProvider<ITabController<TerminalCubit>>(
         create: (context) => ITabController<TerminalCubit>(
-          newItemGenerator: (int index) {
+          cleanup: (term) {
+            term.close();
+          },
+          newItemGenerator: (index) {
             return TerminalCubit(
               TermGenerator(
                 maxLines: 1000,
@@ -65,14 +71,20 @@ class HighTermApp extends StatelessWidget {
           },
         ),
         child: MacosApp(
-          title: 'Flutter Demo',
+          title: 'High term',
           builder: (context, child) => Padding(
             padding: const EdgeInsets.only(bottom: 5),
-            child: ResizableWrapper(
-              resizeDirection: AxisDirection.down,
-              child: Padding(
-                padding: const EdgeInsets.symmetric(vertical: 5),
-                child: child,
+            child: Shortcuts.manager(
+              manager: ShortcutManager(
+                modal: true,
+                shortcuts: {},
+              ),
+              child: ResizableWrapper(
+                resizeDirection: AxisDirection.down,
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 5),
+                  child: child,
+                ),
               ),
             ),
           ),
@@ -80,7 +92,7 @@ class HighTermApp extends StatelessWidget {
           theme: MacosThemeData.light(),
           darkTheme: MacosThemeData.dark(),
           themeMode: ThemeMode.dark,
-          home: const TerminalsMainWindow(title: 'Flutter Demo Home Page'),
+          home: const TerminalsMainWindow(),
         ),
       ),
     );
